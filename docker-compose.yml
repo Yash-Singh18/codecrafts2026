@@ -13,6 +13,20 @@ services:
       retries: 3
       start_period: 10s
 
+  mentor:
+    build: ./mentor-service
+    container_name: codecrafts-mentor
+    env_file:
+      - ./mentor-service/.env
+    ports:
+      - "8021:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
   frontend:
     build: ./frontend
     container_name: codecrafts-frontend
@@ -20,4 +34,6 @@ services:
       - "80:80"
     depends_on:
       backend:
+        condition: service_healthy
+      mentor:
         condition: service_healthy

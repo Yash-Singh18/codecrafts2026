@@ -12,6 +12,7 @@ import AuthCallbackPage from './pages/auth/AuthCallbackPage';
 import FocusZonePage from './pages/focus-zone/FocusZonePage';
 import ProfilePage from './pages/profile/ProfilePage';
 import CareerGuidePage from './pages/career-guide/CareerGuidePage';
+import MentorAI from './components/MentorAI/MentorAI';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -142,6 +143,7 @@ export default function App() {
         <Route path="/career-guide" element={<CareerGuidePage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
       </Routes>
+      <MentorAI user={user} profile={profile} />
     </BrowserRouter>
   );
 }
