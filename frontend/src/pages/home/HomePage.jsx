@@ -13,6 +13,7 @@ const GoogleIcon = () => (
 function HeroSection({ user, onLogin, actionLoading }) {
   return (
     <section className="hero" id="hero">
+      <div className="hero__background-light" />
       <div className="hero__content">
         <div className="hero__badge">AI-Powered Study Assistant</div>
         <h1 className="hero__title">
@@ -25,14 +26,14 @@ function HeroSection({ user, onLogin, actionLoading }) {
         </p>
         <div className="hero__actions">
           {user ? (
-            <Link to="/test-analysis" className="btn btn--primary">Start Test Analysis &rarr;</Link>
+            <Link to="/test-analysis" className="btn btn--primary btn--large">Start Test Analysis &rarr;</Link>
           ) : (
-            <button className="btn btn--primary" onClick={onLogin} disabled={actionLoading}>
+            <button className="btn btn--primary btn--large" onClick={onLogin} disabled={actionLoading}>
               <GoogleIcon />
               {actionLoading ? 'Redirecting...' : 'Start Practicing for Free'}
             </button>
           )}
-          <a href="#about" className="btn btn--ghost">How it works</a>
+          <a href="#features" className="btn btn--ghost btn--large">Explore Features</a>
         </div>
       </div>
 
@@ -68,33 +69,110 @@ function HeroSection({ user, onLogin, actionLoading }) {
   );
 }
 
-function AboutSection() {
+function FeaturesSection() {
   const cards = [
-    { icon: '\uD83C\uDFAF', title: 'Targeted Practice', desc: 'Stop wasting time on what you already know. Our AI pinpoints exactly where you need improvement.' },
-    { icon: '\uD83D\uDCCA', title: 'Deep Analytics', desc: 'Visualize your progress over time with detailed charts breaking down performance by topic and difficulty.' },
-    { icon: '\uD83E\uDD16', title: 'Instant Explanations', desc: 'Stuck on a problem? Get step-by-step AI explanations that teach you the concept, not just the answer.' },
-    { icon: '\uD83D\uDCDA', title: 'Custom Mock Tests', desc: 'Generate unlimited practice exams tailored specifically to your syllabus and upcoming test formats.' },
+    { icon: '💬', title: 'Community', desc: 'Connect with peers, share resources, and learn collaboratively through discussions.', link: '/community' },
+    { icon: '📊', title: 'Test Analysis', desc: 'Analyze mock tests, identify your weak areas, and track your progress visually.', link: '/test-analysis' },
+    { icon: '🎯', title: 'FocusZone', desc: 'Use AI to generate personalized logic maps and keep your study strictly targeted.', link: '/focus-zone' },
+    { icon: '🚀', title: 'Career Guide', desc: 'Explore diverse career domains and get AI-generated roadmaps for your future.', link: '/career-guide' },
   ];
 
   return (
-    <section className="about" id="about">
-      <div className="about__container">
-        <div className="about__header">
-          <span className="about__eyebrow">Why CodeCrafts?</span>
-          <h2 className="about__title">Everything you need to test your preparation</h2>
-          <p className="about__subtitle">
-            We combine advanced LLMs with proven pedagogical techniques to create a study
-            environment that adapts to your unique learning style.
+    <section className="features" id="features">
+      <div className="features__container">
+        <div className="features__header">
+          <span className="features__eyebrow">Platform Features</span>
+          <h2 className="features__title">Everything you need to succeed</h2>
+          <p className="features__subtitle">
+            Seamlessly jump into our dedicated modules to supercharge your preparation.
           </p>
         </div>
-        <div className="about__cards">
+        <div className="features__cards">
           {cards.map((card, idx) => (
-            <div key={card.title} className="about__card" style={{ '--animation-order': idx }}>
-              <div className="about__card-icon-wrapper">
-                <span className="about__card-icon">{card.icon}</span>
+            <Link to={card.link} key={card.title} className="features__card" style={{ '--animation-order': idx }}>
+              <div className="features__card-icon-wrapper">
+                <span className="features__card-icon">{card.icon}</span>
               </div>
-              <h3 className="about__card-title">{card.title}</h3>
-              <p className="about__card-desc">{card.desc}</p>
+              <h3 className="features__card-title">{card.title}</h3>
+              <p className="features__card-desc">{card.desc}</p>
+              <span className="features__card-action">Explore {card.title} &rarr;</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AboutUsSection() {
+  return (
+    <section className="about-us" id="about">
+      <div className="about-us__container">
+        <div className="about-us__content">
+          <span className="about-us__eyebrow">Our Mission</span>
+          <h2 className="about-us__title">Empowering the next generation of learners</h2>
+          <p className="about-us__desc">
+            CodeCrafts was built on the belief that education should be personalized. Every student has unique strengths and weaknesses that traditional classrooms can't always address. By leveraging cutting-edge Artificial Intelligence, we bridge that gap.
+          </p>
+          <p className="about-us__desc">
+            We combine advanced LLMs with proven pedagogical techniques to create a study environment that adapts instantly to your needs. From deep test analytics to real-time doubt resolution and structured career roadmapping, we are dedicated to helping you achieve your true potential.
+          </p>
+          <div className="about-us__stats">
+            <div className="stat-box">
+              <span className="stat-num">50k+</span>
+              <span className="stat-label">Students Guided</span>
+            </div>
+            <div className="stat-box">
+              <span className="stat-num">2M+</span>
+              <span className="stat-label">Questions Analyzed</span>
+            </div>
+            <div className="stat-box">
+              <span className="stat-num">99%</span>
+              <span className="stat-label">Satisfaction Rate</span>
+            </div>
+          </div>
+        </div>
+        <div className="about-us__visual">
+          <div className="about-us__image-placeholder">
+            <div className="about-us__glow" />
+            <span className="about-us__logo-icon">&#x2B21;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ReviewsSection() {
+  const reviews = [
+    { name: "Sarah J.", role: "Engineering Student", text: "The Test Analysis completely changed how I study. I stopped wasting time on topics I knew and focused purely on my weaknesses.", rating: 5 },
+    { name: "Michael T.", role: "High School Senior", text: "FocusZone kept me from getting distracted. The AI generated logic maps broke down huge syllabus chapters into bite-sized tasks.", rating: 5 },
+    { name: "Priya R.", role: "Medical Aspirant", text: "The Career Guide roadmaps are insanely detailed. It told me exactly what exams to prepare for and when. Highly recommended!", rating: 4 },
+  ];
+
+  return (
+    <section className="reviews" id="reviews">
+      <div className="reviews__container">
+        <div className="reviews__header">
+          <h2 className="reviews__title">Loved by students nationwide</h2>
+          <p className="reviews__subtitle">See how CodeCrafts is transforming exam preparation.</p>
+        </div>
+        <div className="reviews__grid">
+          {reviews.map((r, i) => (
+            <div key={i} className="review-card">
+              <div className="review-card__stars">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <span key={idx} className={idx < r.rating ? "star filled" : "star"}>&#9733;</span>
+                ))}
+              </div>
+              <p className="review-card__text">"{r.text}"</p>
+              <div className="review-card__author">
+                <div className="author-avatar">{r.name.charAt(0)}</div>
+                <div className="author-info">
+                  <span className="author-name">{r.name}</span>
+                  <span className="author-role">{r.role}</span>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -112,6 +190,11 @@ function Footer() {
           <span className="footer__brand-name">CodeCrafts</span>
         </div>
         <p className="footer__tagline">The ultimate AI preparation tool for students.</p>
+        <div className="footer__links">
+          <a href="#features">Features</a>
+          <a href="#about">About</a>
+          <a href="#reviews">Reviews</a>
+        </div>
         <p className="footer__copy">&copy; {new Date().getFullYear()} CodeCrafts. All rights reserved.</p>
       </div>
     </footer>
@@ -120,10 +203,12 @@ function Footer() {
 
 export default function HomePage({ user, onLogin, actionLoading }) {
   return (
-    <>
+    <div className="homepage-wrapper">
       <HeroSection user={user} onLogin={onLogin} actionLoading={actionLoading} />
-      <AboutSection />
+      <FeaturesSection />
+      <AboutUsSection />
+      <ReviewsSection />
       <Footer />
-    </>
+    </div>
   );
 }

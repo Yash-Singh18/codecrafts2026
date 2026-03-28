@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from models.schemas import ChatRequest
@@ -16,7 +17,7 @@ async def mentor_chat(req: ChatRequest):
 
     def generate():
         for chunk in chat_with_mentor(messages, context):
-            yield f"data: {chunk}\n\n"
+            yield f"data: {json.dumps(chunk)}\n\n"
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(generate(), media_type="text/event-stream")

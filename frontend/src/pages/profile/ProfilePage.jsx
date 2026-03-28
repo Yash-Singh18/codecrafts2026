@@ -375,7 +375,7 @@ export default function ProfilePage({ user, profile }) {
                       vertical={false}
                     />
                     <XAxis
-                      dataKey="date"
+                      dataKey="label"
                       tick={{ fill: "var(--color-text-secondary)", fontSize: 12 }}
                       axisLine={{ stroke: "var(--color-border)" }}
                       tickLine={false}

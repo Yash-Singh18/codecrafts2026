@@ -28,7 +28,7 @@ export const mentorService = {
         if (!line.startsWith('data: ')) continue;
         const data = line.slice(6);
         if (data === '[DONE]') return accumulated;
-        accumulated += data;
+        try { accumulated += JSON.parse(data); } catch { accumulated += data; }
         onToken(accumulated);
       }
     }
