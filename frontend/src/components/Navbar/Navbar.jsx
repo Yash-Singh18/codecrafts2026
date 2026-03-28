@@ -47,7 +47,7 @@ export default function Navbar({ user, onLogin, onSignOut, actionLoading, theme,
         <div className="navbar__links">
           <Link
             to="/community"
-            className={`navbar__link ${location.pathname === '/community' ? 'navbar__link--active' : ''}`}
+            className={`navbar__link ${location.pathname.startsWith('/community') ? 'navbar__link--active' : ''}`}
           >
             Community
           </Link>

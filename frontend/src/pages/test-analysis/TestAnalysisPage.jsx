@@ -25,6 +25,7 @@ export default function TestAnalysisPage({ user }) {
   const [report, setReport] = useState(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showTutor, setShowTutor] = useState(true);
 
   const handleStartTest = async (cfg) => {
     setConfig(cfg);
@@ -91,10 +92,11 @@ export default function TestAnalysisPage({ user }) {
     setAnalysis(null);
     setReport(null);
     setError(null);
+    setShowTutor(true);
   };
 
   return (
-    <div className="ta-page">
+    <div className={`ta-page ${phase === PHASE.RESULTS ? 'ta-page--results' : ''}`.trim()}>
       {error && (
         <div className="ta-error">
           <span>{error}</span>
@@ -137,12 +139,29 @@ export default function TestAnalysisPage({ user }) {
             <h1>Test Analysis Results</h1>
             <div className="ta-results__header-actions">
               {user && <span className="ta-saved-badge">Saved to your profile</span>}
+              <button className="btn btn--ghost" onClick={() => setShowTutor(prev => !prev)}>
+                {showTutor ? 'Hide AI Tutor' : 'Show AI Tutor'}
+              </button>
               <button className="btn btn--ghost" onClick={handleRetake}>Take Another Test</button>
             </div>
           </div>
-          <AnalysisDashboard questions={questions} answers={answers} analysis={analysis} />
-          <AIReport report={report} loading={reportLoading} />
-          <ChatPanel questions={questions} answers={answers} analysis={analysis} report={report} />
+          <div className={`ta-results__layout ${showTutor ? '' : 'ta-results__layout--wide'}`.trim()}>
+            <div className="ta-results__main">
+              <AnalysisDashboard questions={questions} answers={answers} analysis={analysis} />
+              <AIReport report={report} loading={reportLoading} />
+            </div>
+            {showTutor && (
+              <aside className="ta-results__sidebar">
+                <ChatPanel
+                  className="ic--sidebar"
+                  questions={questions}
+                  answers={answers}
+                  analysis={analysis}
+                  report={report}
+                />
+              </aside>
+            )}
+          </div>
         </div>
       )}
     </div>

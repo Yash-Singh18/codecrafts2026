@@ -15,6 +15,16 @@ export const communityService = {
     return data;
   },
 
+  async getPost(postId) {
+    const { data, error } = await supabase
+      .from('community_posts')
+      .select('*')
+      .eq('id', postId)
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
   async createPost({ userId, username, avatarUrl, title, content, tag }) {
     const { data, error } = await supabase
       .from('community_posts')
@@ -26,9 +36,36 @@ export const communityService = {
   },
 
   subscribeToPosts(callback) {
+    const channel = supabase.channel(`rt-community-posts-${Math.random().toString(36).slice(2)}`);
+
+    if (callback.onInsert) {
+      channel.on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'community_posts' },
+        payload => callback.onInsert(payload.new),
+      );
+    }
+
+    if (callback.onUpdate) {
+      channel.on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'community_posts' },
+        payload => callback.onUpdate(payload.new, payload.old),
+      );
+    }
+
+    return channel.subscribe();
+  },
+
+  subscribeToPost(postId, callback) {
     return supabase
-      .channel('rt-community-posts')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'community_posts' }, p => callback(p.new))
+      .channel(`rt-community-post-${postId}-${Math.random().toString(36).slice(2)}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'community_posts',
+        filter: `id=eq.${postId}`,
+      }, payload => callback(payload.new, payload.old))
       .subscribe();
   },
 
@@ -59,6 +96,15 @@ export const communityService = {
       .order('created_at', { ascending: true });
     if (error) throw error;
     return data;
+  },
+
+  async getCommentsCount(postId) {
+    const { count, error } = await supabase
+      .from('post_comments')
+      .select('*', { count: 'exact', head: true })
+      .eq('post_id', postId);
+    if (error) throw error;
+    return count ?? 0;
   },
 
   async addComment({ postId, userId, username, avatarUrl, content }) {

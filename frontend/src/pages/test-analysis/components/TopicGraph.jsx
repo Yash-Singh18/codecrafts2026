@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 function getColor(accuracy) {
   if (accuracy >= 80) return '#22c55e';
   if (accuracy >= 60) return '#eab308';

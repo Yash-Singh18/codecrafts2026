@@ -46,7 +46,7 @@ const formatMessage = (text) => {
   });
 };
 
-export default function ChatPanel({ questions, answers, analysis, report }) {
+export default function ChatPanel({ questions, answers, analysis, report, className = '' }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -55,12 +55,17 @@ export default function ChatPanel({ questions, answers, analysis, report }) {
   ]);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const inputRef = useRef(null);
   const textareaRef = useRef(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth',
+    });
   }, [messages]);
 
   const buildContext = () => ({
@@ -119,7 +124,11 @@ export default function ChatPanel({ questions, answers, analysis, report }) {
       });
     } finally {
       setStreaming(false);
-      inputRef.current?.focus();
+      try {
+        inputRef.current?.focus({ preventScroll: true });
+      } catch {
+        inputRef.current?.focus();
+      }
     }
   };
 
@@ -138,7 +147,7 @@ export default function ChatPanel({ questions, answers, analysis, report }) {
   };
 
   return (
-    <div className="ic">
+    <div className={`ic ${className}`.trim()}>
       <div className="ic__header">
         <div className="ic__header-left">
           <div className="ic__avatar">AI</div>
@@ -153,7 +162,7 @@ export default function ChatPanel({ questions, answers, analysis, report }) {
         </div>
       </div>
 
-      <div className="ic__messages">
+      <div className="ic__messages" ref={messagesContainerRef}>
         {messages.map((msg, i) => (
           <div key={i} className={`ic__msg ic__msg--${msg.role}`}>
             {msg.role === 'assistant' && <div className="ic__msg-avatar">AI</div>}
@@ -166,7 +175,6 @@ export default function ChatPanel({ questions, answers, analysis, report }) {
             {msg.role === 'user' && <div className="ic__msg-user-avatar">You</div>}
           </div>
         ))}
-        <div ref={messagesEndRef} />
       </div>
 
       {messages.length <= 2 && !streaming && (
@@ -186,7 +194,7 @@ export default function ChatPanel({ questions, answers, analysis, report }) {
           value={input}
           onChange={handleInput}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about your results… (Enter to send, Shift+Enter for newline)"
+          placeholder="Ask about your result"
           rows={1}
           disabled={streaming}
         />
