@@ -1,0 +1,14 @@
+# Supabase local dev config
+# Run `supabase init` to regenerate if needed
+
+[project]
+# Add your project ref here
+# project_id = "your-project-ref"
+
+[auth]
+enabled = true
+# Allowed OAuth providers
+external_google_enabled = true
+# Set in Supabase dashboard: Authentication > Providers > Google
+# external_google_client_id = ""
+# external_google_secret = ""
