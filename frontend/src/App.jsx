@@ -11,6 +11,7 @@ import CommunityPostPage from './pages/community/CommunityPostPage';
 import AuthCallbackPage from './pages/auth/AuthCallbackPage';
 import FocusZonePage from './pages/focus-zone/FocusZonePage';
 import ProfilePage from './pages/profile/ProfilePage';
+import CareerGuidePage from './pages/career-guide/CareerGuidePage';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -138,6 +139,7 @@ export default function App() {
         <Route path="/community/:postId" element={<CommunityPostPage user={user} profile={profile} onLogin={handleGoogleLogin} />} />
         <Route path="/focus-zone" element={<FocusZonePage />} />
         <Route path="/profile" element={<ProfilePage user={user} profile={profile} />} />
+        <Route path="/career-guide" element={<CareerGuidePage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
       </Routes>
     </BrowserRouter>

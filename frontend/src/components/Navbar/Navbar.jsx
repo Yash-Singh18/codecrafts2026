@@ -63,6 +63,12 @@ export default function Navbar({ user, profile, onLogin, onSignOut, actionLoadin
           >
             FocusZone
           </Link>
+          <Link
+            to="/career-guide"
+            className={`navbar__link ${location.pathname === '/career-guide' ? 'navbar__link--active' : ''}`}
+          >
+            Career Guide
+          </Link>
         </div>
 
         <div className="navbar__actions">

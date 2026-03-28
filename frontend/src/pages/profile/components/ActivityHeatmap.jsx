@@ -38,7 +38,8 @@ export default function ActivityHeatmap({ data = {} }) {
 
         if (d > today) continue;
 
-        const key = d.toISOString().slice(0, 10);
+        const pad = n => String(n).padStart(2, '0');
+        const key = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
         const entry = data[key];
         const count = entry?.count || 0;
         const scores = entry?.scores || [];

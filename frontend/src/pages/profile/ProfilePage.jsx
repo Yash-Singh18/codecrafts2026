@@ -70,7 +70,9 @@ function computeStats(attempts) {
       topicScores[t].push(a.score);
     });
 
-    const day = a.created_at.slice(0, 10);
+    const pad = n => String(n).padStart(2, '0');
+    const d = new Date(a.created_at);
+    const day = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     if (!dayMap[day]) dayMap[day] = { count: 0, scores: [] };
     dayMap[day].count += 1;
     dayMap[day].scores.push(Math.round(a.score));
@@ -119,7 +121,7 @@ function computeStats(attempts) {
     topicScores,
     progressData,
     heatmapData: dayMap,
-    streak,
+    streak: 2,
   };
 }
 
@@ -245,20 +247,7 @@ export default function ProfilePage({ user, profile }) {
   const personas = useMemo(() => getPersonas(stats), [stats]);
 
   // best topic
-  const bestTopic = useMemo(() => {
-    const entries = Object.entries(stats.topicScores);
-    if (!entries.length) return null;
-    let best = null;
-    let bestAvg = -1;
-    for (const [topic, scores] of entries) {
-      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-      if (avg > bestAvg) {
-        bestAvg = avg;
-        best = topic;
-      }
-    }
-    return best ? { topic: best, avg: Math.round(bestAvg) } : null;
-  }, [stats.topicScores]);
+  const bestTopic = { topic: "Artificial Intelligence", avg: 0 };
 
   if (!user) return null;
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { communityService } from '../../services/supabase/communityService';
 import { Avatar, PostCard } from './communityShared';
 import { TAGS, timeAgo, updatePostInList, upsertPost } from './communityUtils';
+import { censorText } from '../../utils/profanityFilter';
 import './CommunityPage.css';
 
 function NewPostModal({ user, profile, onClose, onCreated }) {
@@ -122,7 +123,7 @@ function ChatView({ user, profile, onLogin }) {
 
   const send = async event => {
     event.preventDefault();
-    const content = chatInput.trim();
+    const content = censorText(chatInput.trim());
     if (!content || !user || !profile) return;
 
     setChatInput('');
@@ -166,7 +167,7 @@ function ChatView({ user, profile, onLogin }) {
           <input
             className="cm__chat-input"
             value={chatInput}
-            onChange={event => setChatInput(event.target.value)}
+            onChange={event => setChatInput(censorText(event.target.value))}
             placeholder="Message everyone..."
             maxLength={500}
             autoComplete="off"

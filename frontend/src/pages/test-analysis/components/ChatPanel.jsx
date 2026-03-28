@@ -8,42 +8,55 @@ const SUGGESTIONS = [
   'What should I focus on first?',
 ];
 
+const formatInline = (text) => {
+  // Split on **bold**, *italic*, `code`, and [text](url)
+  const parts = text.split(/(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\))/g);
+  return parts.map((part, idx) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={idx} style={{ color: 'var(--color-text-primary)' }}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={idx}>{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={idx} style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 4px', borderRadius: '4px', color: 'var(--color-accent)' }}>
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    // Markdown link [label](url)
+    const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+    if (linkMatch) {
+      const [, label, url] = linkMatch;
+      const isYT = url.includes('youtube.com');
+      const isScholar = url.includes('scholar.google');
+      return (
+        <a
+          key={idx}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ic__resource-link"
+          data-type={isYT ? 'youtube' : isScholar ? 'scholar' : 'link'}
+        >
+          {isYT ? '▶ ' : isScholar ? '📄 ' : '🔗 '}{label}
+        </a>
+      );
+    }
+    return <span key={idx}>{part}</span>;
+  });
+};
+
 const formatMessage = (text) => {
   if (!text) return null;
-  
   const paragraphs = text.split('\n');
-  
-  return paragraphs.map((paragraph, pIdx) => {
-    // Split by various markdown tokens
-    const parts = paragraph.split(/(\*\*.*?\*\*|\*.*?\*|`.*?`)/g);
-    
-    return (
-      <span key={pIdx}>
-        {parts.map((part, idx) => {
-          if (part.startsWith('**') && part.endsWith('**')) {
-            return <strong key={idx} style={{ color: 'var(--color-text-primary)' }}>{part.slice(2, -2)}</strong>;
-          }
-          if (part.startsWith('*') && part.endsWith('*')) {
-            return <em key={idx}>{part.slice(1, -1)}</em>;
-          }
-          if (part.startsWith('`') && part.endsWith('`')) {
-            return (
-              <code key={idx} style={{
-                background: 'rgba(0,0,0,0.1)', 
-                padding: '2px 4px', 
-                borderRadius: '4px',
-                color: 'var(--color-accent)'
-              }}>
-                {part.slice(1, -1)}
-              </code>
-            );
-          }
-          return <span key={idx}>{part}</span>;
-        })}
-        {pIdx < paragraphs.length - 1 && <br />}
-      </span>
-    );
-  });
+  return paragraphs.map((paragraph, pIdx) => (
+    <span key={pIdx}>
+      {formatInline(paragraph)}
+      {pIdx < paragraphs.length - 1 && <br />}
+    </span>
+  ));
 };
 
 export default function ChatPanel({ questions, answers, analysis, report, className = '' }) {

@@ -234,7 +234,15 @@ RULES:
 - When they ask about a topic, explain concepts clearly with examples.
 - If they ask "why did I get Q3 wrong", look up question 3 and explain.
 - Keep responses concise but helpful. Use markdown formatting.
-- You are their personal tutor - be warm and direct."""
+- You are their personal tutor - be warm and direct.
+
+RESOURCES: Whenever you explain a concept or suggest study material, always include 2-3 relevant resource links at the end of your response using this exact markdown format:
+📺 **Resources:**
+- [Search YouTube: <topic> explained](https://www.youtube.com/results?search_query=<url-encoded-topic>+explained)
+- [<Specific channel> on <topic>](https://www.youtube.com/results?search_query=<channel>+<url-encoded-topic>)
+- [Google Scholar: <topic>](https://scholar.google.com/scholar?q=<url-encoded-topic>)
+
+Replace <topic>, <channel>, and <url-encoded-topic> with real values (URL-encode spaces as +). Choose well-known channels like Khan Academy, 3Blue1Brown, MIT OpenCourseWare, freeCodeCamp, Numberphile, CrashCourse based on the subject. For math/science use 3Blue1Brown or Khan Academy. For programming use freeCodeCamp or Fireship. Always include at least one YouTube link and one Google Scholar link."""
 
     api_messages = [{"role": "system", "content": system_prompt}]
     for msg in messages:

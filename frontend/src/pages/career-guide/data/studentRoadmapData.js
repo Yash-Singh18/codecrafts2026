@@ -1,6 +1,4 @@
-import type { KnowledgeGraphData } from "../types/knowledge";
-
-export const studentRoadmapData: KnowledgeGraphData = {
+export const studentRoadmapData = {
   nodes: [
     {
       id: "student",
@@ -36,7 +34,6 @@ export const studentRoadmapData: KnowledgeGraphData = {
       description: "Design, communication, psychology, civil services, law, and creative careers.",
       icon: "Palette"
     },
-
     {
       id: "technology",
       label: "Technology",
@@ -127,7 +124,6 @@ export const studentRoadmapData: KnowledgeGraphData = {
       description: "UPSC-centered public leadership, governance, policy, and administration.",
       icon: "Globe2"
     },
-
     {
       id: "ai-careers",
       label: "AI / Data Science",
@@ -199,26 +195,21 @@ export const studentRoadmapData: KnowledgeGraphData = {
     { id: "e-student-science", source: "student", target: "science" },
     { id: "e-student-commerce", source: "student", target: "commerce" },
     { id: "e-student-arts", source: "student", target: "arts" },
-
     { id: "e-science-tech", source: "science", target: "technology" },
     { id: "e-science-medicine", source: "science", target: "medicine" },
     { id: "e-science-research", source: "science", target: "research" },
-
     { id: "e-commerce-finance", source: "commerce", target: "finance" },
     { id: "e-commerce-business", source: "commerce", target: "business" },
     { id: "e-commerce-law", source: "commerce", target: "law" },
-
     { id: "e-arts-design", source: "arts", target: "design" },
     { id: "e-arts-psychology", source: "arts", target: "psychology" },
     { id: "e-arts-civil", source: "arts", target: "civil-services" },
-
     { id: "e-tech-ai", source: "technology", target: "ai-careers" },
     { id: "e-medicine-doctor", source: "medicine", target: "doctor-careers" },
     { id: "e-finance-ca", source: "finance", target: "ca-careers" },
     { id: "e-business-startup", source: "business", target: "startup-careers" },
     { id: "e-design-ux", source: "design", target: "ux-careers" },
     { id: "e-civil-upsc", source: "civil-services", target: "upsc-careers" },
-
     {
       id: "impact-tech-finance",
       source: "technology",
