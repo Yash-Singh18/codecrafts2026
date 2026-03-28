@@ -14,7 +14,7 @@ function getGlow(accuracy) {
   return 'rgba(239, 68, 68, 0.4)';
 }
 
-export default function TopicGraph({ topicPerformance, onSelectTopic, selectedTopic }) {
+export default function TopicGraph({ topicPerformance, onSelectTopic, selectedTopic, overallScore }) {
   const topics = Object.entries(topicPerformance);
   if (topics.length === 0) return null;
 
@@ -27,6 +27,17 @@ export default function TopicGraph({ topicPerformance, onSelectTopic, selectedTo
 
       <div className="tg__canvas">
         <svg viewBox="0 0 600 560" className="tg__svg">
+          <defs>
+            <filter id="glow-center" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="8" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            <filter id="glow-node" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
           {/* Lines from center to each topic */}
           {topics.map(([topic, data], i) => {
             const angle = (2 * Math.PI * i) / topics.length - Math.PI / 2;
@@ -45,9 +56,9 @@ export default function TopicGraph({ topicPerformance, onSelectTopic, selectedTo
           })}
 
           {/* Center hub */}
-          <circle cx={cx} cy={cy} r="36" fill="var(--color-surface)" stroke="var(--color-accent)" strokeWidth="2.5" />
-          <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--color-text-primary)" fontSize="11" fontWeight="700">Your</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fill="var(--color-text-primary)" fontSize="11" fontWeight="700">Score</text>
+          <circle cx={cx} cy={cy} r="46" fill="var(--color-surface)" stroke="var(--color-accent)" strokeWidth="3" filter="url(#glow-center)" />
+          <text x={cx} y={cy - 12} textAnchor="middle" fill="var(--color-text-primary)" fontSize="12" fontWeight="700">Accuracy</text>
+          <text x={cx} y={cy + 12} textAnchor="middle" fill={getColor(overallScore || 0)} fontSize="22" fontWeight="800">{overallScore || 0}%</text>
 
           {/* Topic nodes */}
           {topics.map(([topic, data], i) => {
@@ -62,24 +73,25 @@ export default function TopicGraph({ topicPerformance, onSelectTopic, selectedTo
                 key={topic}
                 className="tg__node"
                 onClick={() => onSelectTopic(isSelected ? null : topic)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', transition: 'all var(--transition-normal)' }}
               >
                 {/* Glow */}
-                <circle cx={x} cy={y} r={isSelected ? 50 : 44} fill={getGlow(data.accuracy)} opacity={isSelected ? 1 : 0.5}>
-                  <animate attributeName="r" values={isSelected ? '48;52;48' : '42;46;42'} dur="3s" repeatCount="indefinite" />
+                <circle cx={x} cy={y} r={isSelected ? 52 : 46} fill={getGlow(data.accuracy)} opacity={isSelected ? 1 : 0.4}>
+                  <animate attributeName="r" values={isSelected ? '50;54;50' : '44;48;44'} dur="3s" repeatCount="indefinite" />
                 </circle>
 
                 {/* Node circle */}
                 <circle
-                  cx={x} cy={y} r="38"
+                  cx={x} cy={y} r="40"
                   fill="var(--color-surface)"
                   stroke={color}
-                  strokeWidth={isSelected ? '3.5' : '2.5'}
+                  strokeWidth={isSelected ? '4' : '2.5'}
+                  filter={isSelected ? "url(#glow-node)" : ""}
                 />
 
                 {/* Accuracy arc */}
                 {(() => {
-                  const r = 32;
+                  const r = 34;
                   const pct = data.accuracy / 100;
                   const endAngle = pct * 2 * Math.PI - Math.PI / 2;
                   const startAngle = -Math.PI / 2;
@@ -90,11 +102,11 @@ export default function TopicGraph({ topicPerformance, onSelectTopic, selectedTo
                   const ey = y + r * Math.sin(endAngle);
                   return (
                     <>
-                      <circle cx={x} cy={y} r={r} fill="none" stroke="var(--color-border)" strokeWidth="3" opacity="0.3" />
+                      <circle cx={x} cy={y} r={r} fill="none" stroke="var(--color-border)" strokeWidth="4" opacity="0.3" />
                       {pct > 0 && (
                         <path
                           d={`M ${sx} ${sy} A ${r} ${r} 0 ${largeArc} 1 ${ex} ${ey}`}
-                          fill="none" stroke={color} strokeWidth="3" strokeLinecap="round"
+                          fill="none" stroke={color} strokeWidth="4" strokeLinecap="round"
                         />
                       )}
                     </>
@@ -102,11 +114,11 @@ export default function TopicGraph({ topicPerformance, onSelectTopic, selectedTo
                 })()}
 
                 {/* Topic name */}
-                <text x={x} y={y - 6} textAnchor="middle" fill="var(--color-text-primary)" fontSize="10" fontWeight="600">
+                <text x={x} y={y - 8} textAnchor="middle" fill="var(--color-text-primary)" fontSize="10" fontWeight="600">
                   {topic.length > 12 ? topic.slice(0, 11) + '...' : topic}
                 </text>
                 {/* Accuracy % */}
-                <text x={x} y={y + 10} textAnchor="middle" fill={color} fontSize="13" fontWeight="800">
+                <text x={x} y={y + 12} textAnchor="middle" fill={color} fontSize="14" fontWeight="800">
                   {Math.round(data.accuracy)}%
                 </text>
               </g>

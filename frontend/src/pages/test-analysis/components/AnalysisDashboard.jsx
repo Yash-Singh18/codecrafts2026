@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-  Cell,
+  PieChart, Pie, Cell,
 } from 'recharts';
 import TopicGraph from './TopicGraph';
 
@@ -31,6 +31,11 @@ export default function AnalysisDashboard({ questions, answers, analysis }) {
     accuracy: data.accuracy,
     timeEfficiency: Math.min(100, Math.round((data.avg_expected_time / Math.max(data.avg_time, 1)) * 100)),
   }));
+
+  const pieData = [
+    { name: 'Correct', value: overall.correct, color: getScoreColor(overall.score) },
+    { name: 'Incorrect', value: overall.total - overall.correct, color: 'rgba(255, 255, 255, 0.1)' }
+  ];
 
   const timeData = questions.map((q, i) => {
     const ans = answers.find(a => a.question_index === i);
@@ -89,22 +94,60 @@ export default function AnalysisDashboard({ questions, answers, analysis }) {
         </div>
       )}
 
-      {/* Charts row */}
-      <div className="ad__charts">
-        <div className="ad__chart-card">
-          <h3 className="ad__section-title">Topic-wise Accuracy</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={topicBarData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis dataKey="topic" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
-              <YAxis domain={[0, 100]} tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+      {/* New Row: Pie Chart & Topic Accuracy Bar */}
+      <div className="ad__charts ad__charts--top">
+        <div className="ad__chart-card ad__chart-card--pie">
+          <h3 className="ad__section-title">Overall Accuracy</h3>
+          <ResponsiveContainer width="100%" height={260}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={90}
+                paddingAngle={5}
+                dataKey="value"
+                stroke="none"
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
               <Tooltip
                 contentStyle={{
-                  background: 'var(--color-surface)',
+                  background: 'var(--color-bg)',
                   border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                  color: 'var(--color-text-primary)',
+                  borderRadius: '12px',
+                  boxShadow: 'var(--shadow-lg)',
+                  padding: '12px'
                 }}
+                itemStyle={{ color: 'var(--color-text-primary)', fontWeight: '600' }}
+                labelStyle={{ color: 'var(--color-text-secondary)', fontWeight: '700', marginBottom: '4px' }}
+              />
+               <Legend verticalAlign="bottom" height={36} wrapperStyle={{ color: 'var(--color-text-secondary)', fontSize: '12px' }}/>
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="ad__chart-card ad__chart-card--bar">
+          <h3 className="ad__section-title">Topic-wise Accuracy</h3>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={topicBarData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+              <XAxis dataKey="topic" tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis domain={[0, 100]} tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <Tooltip
+                cursor={{ fill: 'var(--color-accent-light)', opacity: 0.2 }}
+                contentStyle={{
+                  background: 'var(--color-bg)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '12px',
+                  boxShadow: 'var(--shadow-lg)',
+                  padding: '12px'
+                }}
+                itemStyle={{ color: 'var(--color-text-primary)', fontWeight: '600' }}
+                labelStyle={{ color: 'var(--color-text-secondary)', fontWeight: '700', marginBottom: '4px' }}
               />
               <Bar dataKey="accuracy" name="Accuracy %" radius={[6, 6, 0, 0]}>
                 {topicBarData.map((entry, i) => (
@@ -114,49 +157,64 @@ export default function AnalysisDashboard({ questions, answers, analysis }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
 
+      {/* Second Row: Radar & Time Analysis */}
+      <div className="ad__charts">
         <div className="ad__chart-card">
           <h3 className="ad__section-title">Skill Radar</h3>
           <ResponsiveContainer width="100%" height={300}>
             <RadarChart data={radarData}>
               <PolarGrid stroke="var(--color-border)" />
-              <PolarAngleAxis dataKey="topic" tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} />
-              <PolarRadiusAxis domain={[0, 100]} tick={{ fill: 'var(--color-text-secondary)', fontSize: 10 }} />
-              <Radar name="Accuracy" dataKey="accuracy" stroke="#818cf8" fill="#818cf8" fillOpacity={0.25} />
-              <Radar name="Time Efficiency" dataKey="timeEfficiency" stroke="#22c55e" fill="#22c55e" fillOpacity={0.15} />
-              <Legend
-                wrapperStyle={{ color: 'var(--color-text-secondary)', fontSize: '12px' }}
+              <PolarAngleAxis dataKey="topic" tick={{ fill: 'var(--color-text-secondary)', fontSize: 10 }} />
+              <PolarRadiusAxis domain={[0, 100]} tick={{ fill: 'var(--color-text-secondary)', fontSize: 10 }} axisLine={false} tickLine={false} />
+              <Radar name="Accuracy" dataKey="accuracy" stroke="#818cf8" fill="#818cf8" fillOpacity={0.3} />
+              <Radar name="Time Efficiency" dataKey="timeEfficiency" stroke="#22c55e" fill="#22c55e" fillOpacity={0.2} />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--color-bg)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '12px',
+                  boxShadow: 'var(--shadow-lg)',
+                  padding: '12px'
+                }}
+                itemStyle={{ color: 'var(--color-text-primary)', fontWeight: '600' }}
+                labelStyle={{ color: 'var(--color-text-secondary)', fontWeight: '700', marginBottom: '4px' }}
               />
+              <Legend wrapperStyle={{ color: 'var(--color-text-secondary)', fontSize: '11px' }} />
             </RadarChart>
           </ResponsiveContainer>
         </div>
-      </div>
 
-      {/* Time analysis chart */}
-      <div className="ad__chart-card ad__chart-card--full">
-        <h3 className="ad__section-title">Time Analysis per Question</h3>
-        <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={timeData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-            <XAxis dataKey="name" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
-            <YAxis tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} label={{ value: 'Seconds', angle: -90, position: 'insideLeft', fill: 'var(--color-text-secondary)' }} />
-            <Tooltip
-              contentStyle={{
-                background: 'var(--color-surface)',
-                border: '1px solid var(--color-border)',
-                borderRadius: '8px',
-                color: 'var(--color-text-primary)',
-              }}
-            />
-            <Legend wrapperStyle={{ color: 'var(--color-text-secondary)', fontSize: '12px' }} />
-            <Bar dataKey="timeTaken" name="Your Time (s)" radius={[4, 4, 0, 0]}>
-              {timeData.map((entry, i) => (
-                <Cell key={i} fill={entry.correct ? '#818cf8' : '#ef4444'} opacity={0.85} />
-              ))}
-            </Bar>
-            <Bar dataKey="expectedTime" name="Expected Time (s)" fill="var(--color-border)" radius={[4, 4, 0, 0]} opacity={0.5} />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="ad__chart-card">
+          <h3 className="ad__section-title">Time Analysis (per Q)</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={timeData} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+              <XAxis dataKey="name" tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false}/>
+              <YAxis tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false}/>
+              <Tooltip
+                cursor={{ fill: 'var(--color-accent-light)', opacity: 0.2 }}
+                contentStyle={{
+                  background: 'var(--color-bg)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '12px',
+                  boxShadow: 'var(--shadow-lg)',
+                  padding: '12px'
+                }}
+                itemStyle={{ color: 'var(--color-text-primary)', fontWeight: '600' }}
+                labelStyle={{ color: 'var(--color-text-secondary)', fontWeight: '700', marginBottom: '4px' }}
+              />
+              <Legend wrapperStyle={{ color: 'var(--color-text-secondary)', fontSize: '11px', paddingTop: '10px' }} />
+              <Bar dataKey="timeTaken" name="Your Time" radius={[4, 4, 0, 0]}>
+                {timeData.map((entry, i) => (
+                   <Cell key={i} fill={entry.correct ? '#818cf8' : '#ef4444'} opacity={0.85} />
+                ))}
+              </Bar>
+              <Bar dataKey="expectedTime" name="Expected" fill="var(--color-text-secondary)" radius={[4, 4, 0, 0]} opacity={0.4} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* Topic Graph */}
@@ -164,6 +222,7 @@ export default function AnalysisDashboard({ questions, answers, analysis }) {
         topicPerformance={topic_performance}
         onSelectTopic={setSelectedTopic}
         selectedTopic={selectedTopic}
+        overallScore={overall.score}
       />
     </div>
   );

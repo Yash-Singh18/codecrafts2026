@@ -8,6 +8,44 @@ const SUGGESTIONS = [
   'What should I focus on first?',
 ];
 
+const formatMessage = (text) => {
+  if (!text) return null;
+  
+  const paragraphs = text.split('\n');
+  
+  return paragraphs.map((paragraph, pIdx) => {
+    // Split by various markdown tokens
+    const parts = paragraph.split(/(\*\*.*?\*\*|\*.*?\*|`.*?`)/g);
+    
+    return (
+      <span key={pIdx}>
+        {parts.map((part, idx) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={idx} style={{ color: 'var(--color-text-primary)' }}>{part.slice(2, -2)}</strong>;
+          }
+          if (part.startsWith('*') && part.endsWith('*')) {
+            return <em key={idx}>{part.slice(1, -1)}</em>;
+          }
+          if (part.startsWith('`') && part.endsWith('`')) {
+            return (
+              <code key={idx} style={{
+                background: 'rgba(0,0,0,0.1)', 
+                padding: '2px 4px', 
+                borderRadius: '4px',
+                color: 'var(--color-accent)'
+              }}>
+                {part.slice(1, -1)}
+              </code>
+            );
+          }
+          return <span key={idx}>{part}</span>;
+        })}
+        {pIdx < paragraphs.length - 1 && <br />}
+      </span>
+    );
+  });
+};
+
 export default function ChatPanel({ questions, answers, analysis, report }) {
   const [messages, setMessages] = useState([
     {
@@ -120,7 +158,7 @@ export default function ChatPanel({ questions, answers, analysis, report }) {
           <div key={i} className={`ic__msg ic__msg--${msg.role}`}>
             {msg.role === 'assistant' && <div className="ic__msg-avatar">AI</div>}
             <div className="ic__msg-bubble">
-              {msg.content}
+              {formatMessage(msg.content)}
               {streaming && i === messages.length - 1 && msg.role === 'assistant' && (
                 <span className="ic__cursor" />
               )}
