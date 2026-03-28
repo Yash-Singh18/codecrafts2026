@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { testAnalysisService } from '../../services/testAnalysis/testAnalysisService';
+import { testAttemptService } from '../../services/testAnalysis/testAttemptService';
 import TestConfig from './components/TestConfig';
 import TestEngine from './components/TestEngine';
 import AnalysisDashboard from './components/AnalysisDashboard';
 import AIReport from './components/AIReport';
+import ChatPanel from './components/ChatPanel';
 import './TestAnalysisPage.css';
 
 const PHASE = {
@@ -16,6 +18,7 @@ const PHASE = {
 
 export default function TestAnalysisPage({ user }) {
   const [phase, setPhase] = useState(PHASE.CONFIG);
+  const [config, setConfig] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [analysis, setAnalysis] = useState(null);
@@ -23,11 +26,12 @@ export default function TestAnalysisPage({ user }) {
   const [reportLoading, setReportLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleStartTest = async (config) => {
+  const handleStartTest = async (cfg) => {
+    setConfig(cfg);
     setPhase(PHASE.GENERATING);
     setError(null);
     try {
-      const data = await testAnalysisService.generateTest(config);
+      const data = await testAnalysisService.generateTest(cfg);
       setQuestions(data.questions);
       setPhase(PHASE.TEST);
     } catch (err) {
@@ -47,13 +51,31 @@ export default function TestAnalysisPage({ user }) {
 
       // Fetch AI report in background
       setReportLoading(true);
+      let reportData = null;
       try {
-        const reportData = await testAnalysisService.generateReport(questions, results, analysisData);
-        setReport(reportData.report);
+        const res = await testAnalysisService.generateReport(questions, results, analysisData);
+        reportData = res.report;
+        setReport(reportData);
       } catch {
-        // Report is optional, don't block results
+        // report is optional
       } finally {
         setReportLoading(false);
+      }
+
+      // Save attempt to Supabase if logged in
+      if (user) {
+        try {
+          await testAttemptService.saveAttempt({
+            userId: user.id,
+            config,
+            questions,
+            answers: results,
+            analysis: analysisData,
+            report: reportData,
+          });
+        } catch {
+          // Saving is non-blocking
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -63,6 +85,7 @@ export default function TestAnalysisPage({ user }) {
 
   const handleRetake = () => {
     setPhase(PHASE.CONFIG);
+    setConfig(null);
     setQuestions([]);
     setAnswers([]);
     setAnalysis(null);
@@ -79,9 +102,7 @@ export default function TestAnalysisPage({ user }) {
         </div>
       )}
 
-      {phase === PHASE.CONFIG && (
-        <TestConfig onStart={handleStartTest} loading={false} />
-      )}
+      {phase === PHASE.CONFIG && <TestConfig onStart={handleStartTest} loading={false} />}
 
       {phase === PHASE.GENERATING && (
         <div className="ta-loading">
@@ -98,9 +119,7 @@ export default function TestAnalysisPage({ user }) {
         </div>
       )}
 
-      {phase === PHASE.TEST && (
-        <TestEngine questions={questions} onComplete={handleTestComplete} />
-      )}
+      {phase === PHASE.TEST && <TestEngine questions={questions} onComplete={handleTestComplete} />}
 
       {phase === PHASE.ANALYZING && (
         <div className="ta-loading">
@@ -116,16 +135,14 @@ export default function TestAnalysisPage({ user }) {
         <div className="ta-results">
           <div className="ta-results__header">
             <h1>Test Analysis Results</h1>
-            <button className="btn btn--ghost" onClick={handleRetake}>
-              Take Another Test
-            </button>
+            <div className="ta-results__header-actions">
+              {user && <span className="ta-saved-badge">Saved to your profile</span>}
+              <button className="btn btn--ghost" onClick={handleRetake}>Take Another Test</button>
+            </div>
           </div>
-          <AnalysisDashboard
-            questions={questions}
-            answers={answers}
-            analysis={analysis}
-          />
+          <AnalysisDashboard questions={questions} answers={answers} analysis={analysis} />
           <AIReport report={report} loading={reportLoading} />
+          <ChatPanel questions={questions} answers={answers} analysis={analysis} report={report} />
         </div>
       )}
     </div>

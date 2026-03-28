@@ -4,8 +4,8 @@ services:
     container_name: codecrafts-backend
     env_file:
       - ./test-analysis-service/.env
-    expose:
-      - "8000"
+    ports:
+      - "8020:8000"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s

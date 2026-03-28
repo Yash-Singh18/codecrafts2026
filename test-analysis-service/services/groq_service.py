@@ -144,6 +144,14 @@ No markdown, no code fences."""
     return json.loads(raw)
 
 
+def _fmt_time(seconds):
+    """Convert seconds to a human-readable string."""
+    s = int(seconds)
+    if s < 60:
+        return f"{s}s"
+    return f"{s // 60}m {s % 60}s"
+
+
 def generate_report(questions, answers, analysis):
     summary = [
         {
@@ -155,10 +163,29 @@ def generate_report(questions, answers, analysis):
         for q in questions
     ]
 
+    # Build explicit human-readable time fields so the LLM can't misinterpret units
+    overall = analysis.get("overall", {})
+    topic_perf = analysis.get("topic_performance", {})
+
+    time_context = {
+        "total_time": _fmt_time(overall.get("total_time", 0)),
+        "total_expected_time": _fmt_time(overall.get("total_expected_time", 0)),
+        "per_topic": {
+            topic: {
+                "avg_time_per_question": _fmt_time(data["avg_time"]),
+                "avg_expected_time_per_question": _fmt_time(data["avg_expected_time"]),
+                "time_ratio": f"{data['time_ratio']}x expected",
+            }
+            for topic, data in topic_perf.items()
+        },
+    }
+
     prompt = f"""You are an expert educational analyst. Based on the following test data, generate a comprehensive performance report.
 
+IMPORTANT: All times below are already formatted as human-readable strings (e.g. "1m 11s", "45s"). Use them exactly as given — do NOT convert or reinterpret them.
+
 Data:
-{json.dumps({"questions_summary": summary, "answers": answers, "analysis": analysis}, indent=2)}
+{json.dumps({"questions_summary": summary, "answers": answers, "analysis": analysis, "time_summary": time_context}, indent=2)}
 
 Generate a detailed, personalized report with:
 1. Overall assessment (2-3 sentences)
@@ -193,3 +220,40 @@ No markdown, no code fences."""
 
     raw = _extract_json(response.choices[0].message.content.strip(), "{")
     return json.loads(raw)
+
+
+def chat_with_context(messages, context):
+    """Conversational chat with full test context, streamed."""
+    context_summary = json.dumps(context, indent=2, default=str)
+
+    system_prompt = f"""You are an expert tutor and study coach. The student just completed a test and you have their full results.
+
+IMPORTANT: All time values in the context are in SECONDS. When mentioning times, always convert to human-readable format (e.g. 71 seconds = "1 minute 11 seconds", 45 seconds = "45 seconds").
+
+TEST CONTEXT:
+{context_summary}
+
+RULES:
+- You know every question they got right/wrong, their time per question, weak topics, and the full analysis.
+- Be conversational, encouraging, and specific. Reference their actual test data.
+- When they ask about a topic, explain concepts clearly with examples.
+- If they ask "why did I get Q3 wrong", look up question 3 and explain.
+- Keep responses concise but helpful. Use markdown formatting.
+- You are their personal tutor - be warm and direct."""
+
+    api_messages = [{"role": "system", "content": system_prompt}]
+    for msg in messages:
+        api_messages.append({"role": msg["role"], "content": msg["content"]})
+
+    response = _get_client().chat.completions.create(
+        model=MODEL_70B,
+        messages=api_messages,
+        temperature=0.6,
+        max_tokens=1500,
+        stream=True,
+    )
+
+    for chunk in response:
+        delta = chunk.choices[0].delta
+        if delta.content:
+            yield delta.content

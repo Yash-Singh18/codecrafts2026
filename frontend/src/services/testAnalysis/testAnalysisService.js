@@ -39,4 +39,27 @@ export const testAnalysisService = {
     }
     return res.json();
   },
+
+  async chatStream(messages, context, onToken) {
+    const res = await fetch(`${API_URL}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, context }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Chat failed');
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let full = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      full += chunk;
+      onToken(full);
+    }
+    return full;
+  },
 };

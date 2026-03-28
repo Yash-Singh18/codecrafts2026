@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from models.schemas import TestConfig, AnalysisRequest, ReportRequest
-from services.groq_service import generate_questions, generate_insights, generate_report
+from fastapi.responses import StreamingResponse
+from models.schemas import TestConfig, AnalysisRequest, ReportRequest, ChatRequest
+from services.groq_service import generate_questions, generate_insights, generate_report, chat_with_context
 from services.analysis_service import analyze_performance
 
 router = APIRouter()
@@ -39,5 +40,19 @@ async def generate_test_report(request: ReportRequest):
 
         report = generate_report(questions_dict, answers_dict, request.analysis)
         return {"report": report}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/chat")
+async def chat(request: ChatRequest):
+    try:
+        messages = [m.model_dump() for m in request.messages]
+
+        def stream():
+            for token in chat_with_context(messages, request.context):
+                yield token
+
+        return StreamingResponse(stream(), media_type="text/plain")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

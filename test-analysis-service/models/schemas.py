@@ -41,3 +41,13 @@ class ReportRequest(BaseModel):
     questions: List[Question]
     answers: List[AnswerRecord]
     analysis: dict
+
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class ChatRequest(BaseModel):
+    messages: List[ChatMessage]
+    context: dict
