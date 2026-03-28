@@ -202,7 +202,7 @@
   gap: var(--spacing-md);
 }
 
-.navbar__user-email {
+.navbar__user-name {
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--color-text-secondary);
@@ -210,6 +210,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.navbar__user-name:hover {
+  color: var(--color-accent);
 }
 
 .navbar__btn {
@@ -720,7 +726,7 @@
     display: none;
   }
 
-  .navbar__user-email {
+  .navbar__user-name {
     display: none;
   }
 

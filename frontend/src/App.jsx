@@ -9,6 +9,8 @@ import TestAnalysisPage from './pages/test-analysis/TestAnalysisPage';
 import CommunityPage from './pages/community/CommunityPage';
 import CommunityPostPage from './pages/community/CommunityPostPage';
 import AuthCallbackPage from './pages/auth/AuthCallbackPage';
+import FocusZonePage from './pages/focus-zone/FocusZonePage';
+import ProfilePage from './pages/profile/ProfilePage';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -118,6 +120,7 @@ export default function App() {
       )}
       <Navbar
         user={user}
+        profile={profile}
         onLogin={handleGoogleLogin}
         onSignOut={handleSignOut}
         actionLoading={actionLoading}
@@ -133,6 +136,8 @@ export default function App() {
         <Route path="/test-analysis" element={<TestAnalysisPage user={user} />} />
         <Route path="/community" element={<CommunityPage user={user} profile={profile} onLogin={handleGoogleLogin} />} />
         <Route path="/community/:postId" element={<CommunityPostPage user={user} profile={profile} onLogin={handleGoogleLogin} />} />
+        <Route path="/focus-zone" element={<FocusZonePage />} />
+        <Route path="/profile" element={<ProfilePage user={user} profile={profile} />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
       </Routes>
     </BrowserRouter>

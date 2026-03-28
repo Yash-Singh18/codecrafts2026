@@ -29,4 +29,14 @@ export const profileService = {
       .single();
     return !data;
   },
+
+  async getTestAttempts(userId) {
+    const { data, error } = await supabase
+      .from('test_attempts')
+      .select('id, topics, difficulty, num_questions, question_type, score, total_time, analysis, created_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return data || [];
+  },
 };

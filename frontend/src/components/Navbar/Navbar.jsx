@@ -26,7 +26,7 @@ const MoonIcon = () => (
   </svg>
 );
 
-export default function Navbar({ user, onLogin, onSignOut, actionLoading, theme, toggleTheme }) {
+export default function Navbar({ user, profile, onLogin, onSignOut, actionLoading, theme, toggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
@@ -57,6 +57,12 @@ export default function Navbar({ user, onLogin, onSignOut, actionLoading, theme,
           >
             Test Analysis
           </Link>
+          <Link
+            to="/focus-zone"
+            className={`navbar__link ${location.pathname === '/focus-zone' ? 'navbar__link--active' : ''}`}
+          >
+            FocusZone
+          </Link>
         </div>
 
         <div className="navbar__actions">
@@ -66,7 +72,9 @@ export default function Navbar({ user, onLogin, onSignOut, actionLoading, theme,
 
           {user ? (
             <div className="navbar__auth">
-              <span className="navbar__user-email">{user.email}</span>
+              <Link to="/profile" className="navbar__user-name">
+                {profile?.username ? `@${profile.username}` : user.email}
+              </Link>
               <button
                 className="navbar__btn navbar__btn--outline"
                 onClick={onSignOut}
