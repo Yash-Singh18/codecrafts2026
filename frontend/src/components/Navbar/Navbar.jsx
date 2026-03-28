@@ -45,7 +45,12 @@ export default function Navbar({ user, onLogin, onSignOut, actionLoading, theme,
         </Link>
 
         <div className="navbar__links">
-          <a href="/#about" className="navbar__link">Features</a>
+          <Link
+            to="/community"
+            className={`navbar__link ${location.pathname === '/community' ? 'navbar__link--active' : ''}`}
+          >
+            Community
+          </Link>
           <Link
             to="/test-analysis"
             className={`navbar__link ${location.pathname === '/test-analysis' ? 'navbar__link--active' : ''}`}

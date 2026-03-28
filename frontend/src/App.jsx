@@ -6,6 +6,7 @@ import Navbar from './components/Navbar/Navbar';
 import ProfileSetupModal from './components/ProfileSetupModal/ProfileSetupModal';
 import HomePage from './pages/home/HomePage';
 import TestAnalysisPage from './pages/test-analysis/TestAnalysisPage';
+import CommunityPage from './pages/community/CommunityPage';
 import AuthCallbackPage from './pages/auth/AuthCallbackPage';
 
 export default function App() {
@@ -129,6 +130,7 @@ export default function App() {
           element={<HomePage user={user} onLogin={handleGoogleLogin} actionLoading={actionLoading} />}
         />
         <Route path="/test-analysis" element={<TestAnalysisPage user={user} />} />
+        <Route path="/community" element={<CommunityPage user={user} profile={profile} onLogin={handleGoogleLogin} />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
       </Routes>
     </BrowserRouter>
