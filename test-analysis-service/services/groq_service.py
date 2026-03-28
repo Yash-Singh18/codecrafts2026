@@ -2,13 +2,8 @@ import os
 import json
 from groq import Groq
 
-_client = None
-
 def _get_client():
-    global _client
-    if _client is None:
-        _client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-    return _client
+    return Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 MODEL_70B = "llama-3.3-70b-versatile"
 MODEL_8B = "llama-3.1-8b-instant"

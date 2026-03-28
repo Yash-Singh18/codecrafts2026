@@ -46,13 +46,24 @@ async def generate_test_report(request: ReportRequest):
 
 @router.post("/chat")
 async def chat(request: ChatRequest):
-    try:
-        messages = [m.model_dump() for m in request.messages]
+    import re as _re
+    messages = [m.model_dump() for m in request.messages]
 
-        def stream():
+    def stream():
+        sent_anything = False
+        try:
             for token in chat_with_context(messages, request.context):
+                sent_anything = True
                 yield token
+        except BaseException as e:
+            err = str(e)
+            if "rate_limit_exceeded" in err or "429" in err:
+                wait = _re.search(r'try again in (.+?)\.', err)
+                wait_str = wait.group(1) if wait else "a few minutes"
+                yield f"\n\n⚠️ The AI is temporarily rate-limited. Please try again in {wait_str}."
+            elif not sent_anything:
+                yield f"⚠️ Something went wrong: {err}"
+            else:
+                yield f"\n\n⚠️ Something went wrong: {err}"
 
-        return StreamingResponse(stream(), media_type="text/plain")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return StreamingResponse(stream(), media_type="text/plain")

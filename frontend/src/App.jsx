@@ -1,12 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { authService } from './services/supabase/authService';
+import { profileService } from './services/supabase/profileService';
 import Navbar from './components/Navbar/Navbar';
+import ProfileSetupModal from './components/ProfileSetupModal/ProfileSetupModal';
 import HomePage from './pages/home/HomePage';
 import TestAnalysisPage from './pages/test-analysis/TestAnalysisPage';
+import AuthCallbackPage from './pages/auth/AuthCallbackPage';
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
   const [sessionLoading, setSessionLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -23,7 +28,16 @@ export default function App() {
     const loadSession = async () => {
       try {
         const session = await authService.getSession();
-        setUser(session?.user ?? null);
+        const u = session?.user ?? null;
+        setUser(u);
+        if (u) {
+          const p = await profileService.getProfile(u.id);
+          if (p) {
+            setProfile(p);
+          } else {
+            setShowProfileSetup(true);
+          }
+        }
       } catch {
         setUser(null);
       } finally {
@@ -35,8 +49,25 @@ export default function App() {
 
     const {
       data: { subscription },
-    } = authService.onAuthStateChange(session => {
-      setUser(session?.user ?? null);
+    } = authService.onAuthStateChange(async session => {
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        try {
+          const p = await profileService.getProfile(u.id);
+          if (p) {
+            setProfile(p);
+            setShowProfileSetup(false);
+          } else {
+            setShowProfileSetup(true);
+          }
+        } catch {
+          // non-blocking
+        }
+      } else {
+        setProfile(null);
+        setShowProfileSetup(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -51,6 +82,11 @@ export default function App() {
       setError(err.message || 'Failed to sign in.');
       setActionLoading(false);
     }
+  };
+
+  const handleProfileComplete = (p) => {
+    setProfile(p);
+    setShowProfileSetup(false);
   };
 
   const handleSignOut = async () => {
@@ -75,6 +111,9 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      {showProfileSetup && user && (
+        <ProfileSetupModal user={user} onComplete={handleProfileComplete} />
+      )}
       <Navbar
         user={user}
         onLogin={handleGoogleLogin}
@@ -90,6 +129,7 @@ export default function App() {
           element={<HomePage user={user} onLogin={handleGoogleLogin} actionLoading={actionLoading} />}
         />
         <Route path="/test-analysis" element={<TestAnalysisPage user={user} />} />
+        <Route path="/auth/callback" element={<AuthCallbackPage />} />
       </Routes>
     </BrowserRouter>
   );
