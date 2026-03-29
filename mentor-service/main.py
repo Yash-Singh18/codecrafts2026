@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from routes.mentor_routes import router
+from routes.groq_proxy_routes import router as groq_router
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ app.add_middleware(
 )
 
 app.include_router(router, prefix="/api")
+app.include_router(groq_router, prefix="/api")
 
 
 @app.get("/health")

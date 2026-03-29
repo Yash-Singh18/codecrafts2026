@@ -21,7 +21,7 @@ function HeroSection({ user, onLogin, actionLoading }) {
           <span className="hero__title--accent">Learn Smarter.</span>
         </h1>
         <p className="hero__subtitle">
-          CodeCrafts is your personalized AI tutor. We analyze your preparation, identify weak spots,
+          Rigel is your personalized AI tutor. We analyze your preparation, identify weak spots,
           and provide targeted practice so you can ace your next test.
         </p>
         <div className="hero__actions">
@@ -112,7 +112,7 @@ function AboutUsSection() {
           <span className="about-us__eyebrow">Our Mission</span>
           <h2 className="about-us__title">Empowering the next generation of learners</h2>
           <p className="about-us__desc">
-            CodeCrafts was built on the belief that education should be personalized. Every student has unique strengths and weaknesses that traditional classrooms can't always address. By leveraging cutting-edge Artificial Intelligence, we bridge that gap.
+            Rigel was built on the belief that education should be personalized. Every student has unique strengths and weaknesses that traditional classrooms can't always address. By leveraging cutting-edge Artificial Intelligence, we bridge that gap.
           </p>
           <p className="about-us__desc">
             We combine advanced LLMs with proven pedagogical techniques to create a study environment that adapts instantly to your needs. From deep test analytics to real-time doubt resolution and structured career roadmapping, we are dedicated to helping you achieve your true potential.
@@ -155,7 +155,7 @@ function ReviewsSection() {
       <div className="reviews__container">
         <div className="reviews__header">
           <h2 className="reviews__title">Loved by students nationwide</h2>
-          <p className="reviews__subtitle">See how CodeCrafts is transforming exam preparation.</p>
+          <p className="reviews__subtitle">See how Rigel is transforming exam preparation.</p>
         </div>
         <div className="reviews__grid">
           {reviews.map((r, i) => (
@@ -187,7 +187,7 @@ function Footer() {
       <div className="footer__inner">
         <div className="footer__brand">
           <span className="navbar__logo-icon">&#x2B21;</span>
-          <span className="footer__brand-name">CodeCrafts</span>
+          <span className="footer__brand-name">Rigel</span>
         </div>
         <p className="footer__tagline">The ultimate AI preparation tool for students.</p>
         <div className="footer__links">
@@ -195,7 +195,7 @@ function Footer() {
           <a href="#about">About</a>
           <a href="#reviews">Reviews</a>
         </div>
-        <p className="footer__copy">&copy; {new Date().getFullYear()} CodeCrafts. All rights reserved.</p>
+        <p className="footer__copy">&copy; {new Date().getFullYear()} Rigel. All rights reserved.</p>
       </div>
     </footer>
   );

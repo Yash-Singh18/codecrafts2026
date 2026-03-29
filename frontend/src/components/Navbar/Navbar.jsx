@@ -41,7 +41,7 @@ export default function Navbar({ user, profile, onLogin, onSignOut, actionLoadin
       <div className="navbar__inner">
         <Link to="/" className="navbar__logo">
           <span className="navbar__logo-icon">&#x2B21;</span>
-          <span className="navbar__logo-text">CodeCrafts</span>
+          <span className="navbar__logo-text">Rigel</span>
         </Link>
 
         <div className="navbar__links">

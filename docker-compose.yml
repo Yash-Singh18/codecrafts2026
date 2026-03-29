@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./test-analysis-service
-    container_name: codecrafts-backend
+    container_name: rigel-backend
     env_file:
       - ./test-analysis-service/.env
     ports:
@@ -15,7 +15,7 @@ services:
 
   mentor:
     build: ./mentor-service
-    container_name: codecrafts-mentor
+    container_name: rigel-mentor
     env_file:
       - ./mentor-service/.env
     ports:
@@ -29,7 +29,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: codecrafts-frontend
+    container_name: rigel-frontend
     ports:
       - "80:80"
     depends_on:
