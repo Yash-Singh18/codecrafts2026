@@ -1680,6 +1680,17 @@
   }
 }
 
+@media (max-width: 768px) {
+  .ta-page {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+  }
+
+  .tc__title {
+    font-size: 1.6rem;
+  }
+}
+
 @media (max-width: 640px) {
   .ta-page {
     padding-left: var(--spacing-md);
@@ -1706,6 +1717,76 @@
 
   .ic__msg {
     max-width: 95%;
+  }
+
+  .te__nav-dots {
+    gap: 6px;
+  }
+
+  .te__options {
+    gap: var(--spacing-sm);
+  }
+
+  .te__timer {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ta-page {
+    padding-top: calc(64px + var(--spacing-md));
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+  }
+
+  .tc__title {
+    font-size: 1.4rem;
+  }
+
+  .tc__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .ad__summary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tc__form {
+    padding: var(--spacing-sm);
+  }
+
+  .tc__suggestions {
+    gap: 4px;
+  }
+
+  .tc__chip {
+    font-size: 0.75rem;
+  }
+
+  .ar__section {
+    padding: var(--spacing-md);
+  }
+
+  .te__footer {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .te__footer .te__btn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  .ic__suggestions {
+    flex-wrap: wrap;
+  }
+
+  /* Prevent iOS zoom on inputs */
+  .tc__input,
+  .tc__textarea,
+  .te__text-input {
+    font-size: 16px;
   }
 }
 

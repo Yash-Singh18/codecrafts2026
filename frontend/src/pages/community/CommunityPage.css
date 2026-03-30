@@ -803,8 +803,8 @@
 .cm__modal-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width: 600px) {
-  .cm { padding: 80px var(--spacing-md) var(--spacing-lg); }
+@media (max-width: 768px) {
+  .cm { padding: 76px var(--spacing-md) var(--spacing-lg); }
   .cm__title { font-size: 1.6rem; }
   .cm__header { flex-direction: column; gap: var(--spacing-sm); }
   .cm__view-toggle { width: 100%; }
@@ -812,7 +812,22 @@
   .cm__feed-toolbar { flex-direction: column; align-items: flex-start; }
   .cm__feed-controls { width: 100%; min-width: 0; }
   .cm__search { width: 100%; box-sizing: border-box; }
-  .cm__new-post-btn { width: 100%; text-align: center; }
+  .cm__new-post-btn { width: 100%; text-align: center; justify-content: center; }
   .cm__post-card { padding: var(--spacing-md); }
-  .cm__chat-msg-body { max-width: 85%; }
+  .cm__chat-msg-body { max-width: 88%; }
+}
+
+@media (max-width: 480px) {
+  .cm { padding: 70px var(--spacing-sm) var(--spacing-md); }
+  .cm__title { font-size: 1.4rem; }
+  .cm__post-author { flex-wrap: wrap; }
+  .cm__post-actions { gap: var(--spacing-sm); }
+  .cm__post-action { font-size: 0.78rem; padding: 4px 8px; }
+  .cm__modal { padding: var(--spacing-md); }
+  .cm__tag-filters { gap: 4px; }
+  .cm__tag-filter { padding: 4px 8px; font-size: 0.75rem; }
+  /* Prevent iOS zoom */
+  .cm__search-input, .cm__chat-input, .cm__modal-textarea {
+    font-size: 16px;
+  }
 }

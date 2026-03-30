@@ -441,9 +441,23 @@
 
 /* ── Responsive ──────────────────────────────────────────────── */
 
+@media (max-width: 768px) {
+  /* On tablet, keep panel but narrower */
+  .ma__panel { right: 16px; width: 340px; }
+  .ma__fullpage { inset: 64px 0 0 0; }
+  .ma__fullpage-header { padding: 12px 16px; }
+}
+
 @media (max-width: 520px) {
   .ma__panel { right: 12px; left: 12px; width: auto; bottom: 76px; }
-  .ma__fab { right: 16px; bottom: 20px; }
+  .ma__fab { right: 16px; bottom: 20px; padding: 11px; border-radius: 50%; }
+  .ma__fab-label { display: none; }
+  .ma__fullpage { inset: 56px 0 0 0; }
   .ma__fullpage-inner { padding: 0 14px; }
-  .ma__msg-bubble--user.ma__msg-bubble--full { max-width: 85%; }
+  .ma__fullpage-header { padding: 10px 14px; }
+  .ma__msg-bubble--user.ma__msg-bubble--full { max-width: 85%; font-size: 14px; }
+  .ma__msg-bubble--assistant.ma__msg-bubble--full { max-width: 95%; font-size: 14px; }
+  .ma__suggestions { flex-wrap: wrap; gap: 6px; }
+  .ma__input-row { gap: 6px; }
+  .ma__input { font-size: 16px; } /* prevent iOS zoom on focus */
 }

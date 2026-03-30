@@ -268,6 +268,35 @@
   background-color: var(--color-surface);
 }
 
+/* Hamburger – hidden on desktop */
+.navbar__hamburger {
+  display: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.navbar__hamburger:hover {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+/* Mobile-only auth – hidden on desktop */
+.navbar__mobile-auth {
+  display: none;
+}
+
+.navbar__btn--full {
+  width: 100%;
+  justify-content: center;
+}
+
 .btn-google__icon {
   width: 18px;
   height: 18px;
@@ -1010,17 +1039,115 @@
   .hero__scroll-hint {
     display: none;
   }
+
+  .reviews__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media (max-width: 640px) {
-  .navbar__links {
-    display: none;
+@media (max-width: 768px) {
+  /* ── Navbar collapse ── */
+  .navbar {
+    top: 0.5rem;
+    width: calc(100% - 1.5rem);
+    border-radius: var(--radius-lg);
   }
 
+  .navbar__inner {
+    padding: 0.6rem 1rem;
+  }
+
+  .navbar__hamburger {
+    display: flex;
+  }
+
+  .navbar__links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    gap: var(--spacing-xs);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .navbar__links--open {
+    display: flex;
+  }
+
+  .navbar__link {
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-md);
+    width: 100%;
+  }
+
+  .navbar__link:hover,
+  .navbar__link--active {
+    background: var(--color-accent-light);
+  }
+
+  .navbar__mobile-auth {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+  }
+
+  .navbar__auth,
   .navbar__user-name {
     display: none;
   }
 
+  .navbar__actions .navbar__btn {
+    display: none;
+  }
+
+  .navbar--open {
+    background: rgba(var(--color-surface-rgb, 255, 255, 255), 0.95);
+    border-color: var(--color-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  [data-theme='dark'] .navbar--open {
+    background: rgba(19, 27, 44, 0.95);
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+    gap: var(--spacing-xl);
+  }
+
+  .hero__title {
+    font-size: 2.5rem;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__actions .btn {
+    justify-content: center;
+  }
+
+  /* ── Sections ── */
+  .features, .about-us, .reviews {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 640px) {
   .features__header,
   .about-us__header,
   .reviews__header {
@@ -1030,7 +1157,68 @@
   .about-us__container {
     text-align: left;
   }
+
   .about-us__stats {
     grid-template-columns: 1fr;
+  }
+
+  .features__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    padding: var(--spacing-2xl) var(--spacing-md);
+  }
+
+  .footer__links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    top: 0.4rem;
+    width: calc(100% - 1rem);
+  }
+
+  .navbar__inner {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .navbar__logo-text {
+    font-size: 1rem;
+  }
+
+  .hero {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+    padding-top: calc(80px + var(--spacing-lg));
+  }
+
+  .hero__title {
+    font-size: 2rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+  }
+
+  .hero__badge {
+    font-size: 0.75rem;
+  }
+
+  .features, .about-us, .reviews {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
+  .about-us__stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stat-num {
+    font-size: 1.5rem;
   }
 }

@@ -837,14 +837,19 @@
 
 /* ── Responsive ────────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .fz-page {
+    padding-top: calc(72px + var(--spacing-md));
     padding-left: var(--spacing-md);
     padding-right: var(--spacing-md);
   }
 
   .fz-upload__title {
     font-size: 1.65rem;
+  }
+
+  .fz-upload__card {
+    max-width: 100%;
   }
 
   .fz-upload__controls {
@@ -854,10 +859,12 @@
   .fz-results__header {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--spacing-sm);
   }
 
   .fz-results__actions {
     width: 100%;
+    flex-wrap: wrap;
   }
 
   .fz-results__actions .fz-btn {
@@ -867,5 +874,33 @@
 
   .fz-section__body {
     padding: var(--spacing-md);
+  }
+
+  .fz-dropzone {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .fz-page {
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+  }
+
+  .fz-upload__title {
+    font-size: 1.3rem;
+  }
+
+  .fz-upload__subtitle {
+    font-size: 0.9rem;
+  }
+
+  .fz-section__title {
+    font-size: 1rem;
+  }
+
+  .ftree {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
